@@ -103,9 +103,9 @@ export function CoordinateBlastGame() {
   if (status !== "playing") return null
 
   return (
-    <div className="flex flex-col lg:flex-row items-center gap-10 w-full max-w-5xl">
-      {/* Coordinate Plane */}
-      <div className="relative">
+    <div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-5xl">
+      {/* Coordinate Plane — flex-1 + min-w-0 so it claims available flex space */}
+      <div className="relative flex-1 min-w-0 w-full flex justify-center">
         <CoordinatePlane target={target} feedback={feedback} showAnswer={showAnswer} />
 
         {/* Score popup */}
@@ -126,8 +126,8 @@ export function CoordinateBlastGame() {
         </AnimatePresence>
       </div>
 
-      {/* Controls panel */}
-      <div className="flex flex-col items-center gap-5 w-full max-w-xs">
+      {/* Controls panel — fixed width on desktop so plane gets all remaining space */}
+      <div className="flex flex-col items-center gap-5 w-full lg:w-80 lg:flex-shrink-0">
         <div className="text-center">
           <div className="text-sm text-muted-foreground mb-1">Find the point</div>
           <div className="text-lg font-bold text-primary">

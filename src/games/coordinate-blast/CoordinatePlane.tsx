@@ -27,7 +27,7 @@ export function CoordinatePlane({ target, feedback, showAnswer }: CoordinatePlan
   return (
     <svg
       viewBox={`${-HALF - 30} ${-HALF - 30} ${(HALF + 30) * 2} ${(HALF + 30) * 2}`}
-      className="w-full max-w-[540px] select-none"
+      className="w-full select-none"
       aria-label="Coordinate plane"
     >
       {/* Grid lines */}
