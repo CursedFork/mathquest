@@ -215,33 +215,66 @@ interface CoordInputProps {
 
 const CoordInput = forwardRef<HTMLInputElement, CoordInputProps>(
   ({ label, value, onChange, onEnter, feedback }, ref) => {
+    const isNegative = value.startsWith("-")
+
+    const toggleSign = () => {
+      if (!value || value === "-") {
+        onChange(isNegative ? "" : "-")
+      } else {
+        onChange(isNegative ? value.slice(1) : "-" + value)
+      }
+    }
+
+    const handleChange = (raw: string) => {
+      // Allow only an optional leading minus followed by digits
+      const cleaned = raw.replace(/[^0-9-]/g, "").replace(/(?!^)-/g, "")
+      onChange(cleaned)
+    }
+
+    const borderClass =
+      feedback === "correct"
+        ? "border-success ring-2 ring-success/25"
+        : feedback === "wrong"
+          ? "border-destructive ring-2 ring-destructive/25"
+          : "border-input focus:border-primary focus:ring-2 focus:ring-primary/25"
+
     return (
       <div className="flex flex-col items-center gap-1 flex-1">
         <label className="text-xs text-muted-foreground font-medium">{label}</label>
-        <motion.input
-          ref={ref}
-          type="number"
-          inputMode="numeric"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault()
-              onEnter()
-            }
-          }}
-          animate={feedback === "wrong" ? { x: [0, -6, 6, -4, 4, 0] } : {}}
-          transition={{ duration: 0.35 }}
-          className={`w-full rounded-xl border-2 bg-input px-3 py-3 text-center font-mono text-2xl font-black outline-none transition-all duration-150 ${
-            feedback === "correct"
-              ? "border-success ring-2 ring-success/25"
-              : feedback === "wrong"
-                ? "border-destructive ring-2 ring-destructive/25"
-                : "border-input focus:border-primary focus:ring-2 focus:ring-primary/25"
-          }`}
-          placeholder="0"
-          autoComplete="off"
-        />
+        <div className="flex gap-1.5 w-full items-stretch">
+          {/* ± toggle — visible on all screen sizes, essential on mobile */}
+          <button
+            type="button"
+            onClick={toggleSign}
+            tabIndex={-1}
+            aria-label="Toggle negative"
+            className={`rounded-xl border-2 px-2 font-mono text-xl font-black transition-all duration-150 select-none ${
+              isNegative
+                ? "border-primary bg-primary/15 text-primary"
+                : "border-input bg-input text-muted-foreground hover:border-primary/50"
+            }`}
+          >
+            −
+          </button>
+          <motion.input
+            ref={ref}
+            type="text"
+            inputMode="decimal"
+            value={value}
+            onChange={(e) => handleChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                onEnter()
+              }
+            }}
+            animate={feedback === "wrong" ? { x: [0, -6, 6, -4, 4, 0] } : {}}
+            transition={{ duration: 0.35 }}
+            className={`w-full rounded-xl border-2 bg-input px-3 py-3 text-center font-mono text-2xl font-black outline-none transition-all duration-150 placeholder:text-muted-foreground/30 ${borderClass}`}
+            placeholder="0"
+            autoComplete="off"
+          />
+        </div>
       </div>
     )
   }
