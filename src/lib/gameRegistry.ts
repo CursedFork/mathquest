@@ -47,7 +47,6 @@ export const GAME_REGISTRY: GameDefinition[] = [
     gradientFrom: "#f59e0b",
     gradientTo: "#ef4444",
     icon: "½",
-    comingSoon: true,
   },
   {
     id: "equation-solver",
@@ -62,7 +61,6 @@ export const GAME_REGISTRY: GameDefinition[] = [
     gradientFrom: "#8b5cf6",
     gradientTo: "#3b82f6",
     icon: "𝑥",
-    comingSoon: true,
   },
 ]
 
