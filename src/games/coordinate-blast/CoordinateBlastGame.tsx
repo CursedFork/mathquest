@@ -103,7 +103,7 @@ export function CoordinateBlastGame() {
   if (status !== "playing") return null
 
   return (
-    <div className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-3xl">
+    <div className="flex flex-col lg:flex-row items-center gap-10 w-full max-w-5xl">
       {/* Coordinate Plane */}
       <div className="relative">
         <CoordinatePlane target={target} feedback={feedback} showAnswer={showAnswer} />

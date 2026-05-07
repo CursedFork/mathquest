@@ -77,7 +77,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg"
+              className="text-xl text-muted-foreground leading-relaxed mb-8 max-w-lg"
             >
               Turn ordinary worksheets into addictive arcade-style games. Build streaks, earn XP,
               and actually enjoy practicing math — for students grades 2 through 8.
