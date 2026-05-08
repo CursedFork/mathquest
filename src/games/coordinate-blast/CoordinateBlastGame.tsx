@@ -6,11 +6,15 @@ import { useGameStore } from "@/store/gameStore"
 import { useScore } from "@/hooks/useScore"
 import { useSoundToggle } from "@/hooks/useSoundToggle"
 import { CoordinatePlane } from "./CoordinatePlane"
-import { newTarget, checkCoordAnswer, getQuadrant, MAX_ATTEMPTS, type CoordPoint } from "./logic"
+import { newTarget, checkCoordAnswer, getQuadrant, MAX_ATTEMPTS, type CoordPoint, type CoordMode } from "./logic"
 
 type Feedback = "correct" | "wrong" | null
 
-export function CoordinateBlastGame() {
+interface CoordinateBlastGameProps {
+  mode?: CoordMode
+}
+
+export function CoordinateBlastGame({ mode = "all" }: CoordinateBlastGameProps) {
   const status = useGameStore((s) => s.status)
   const { recordCorrect, recordIncorrect, correctAnswers } = useScore()
   const { playSound } = useSoundToggle()
@@ -31,7 +35,7 @@ export function CoordinateBlastGame() {
   const problemStart = useRef(Date.now())
 
   const spawnTarget = useCallback(() => {
-    setTarget(newTarget())
+    setTarget(newTarget(mode))
     setXInput("")
     setYInput("")
     setFeedback(null)
@@ -40,7 +44,7 @@ export function CoordinateBlastGame() {
     setFeedbackMessage(null)
     problemStart.current = Date.now()
     requestAnimationFrame(() => xRef.current?.focus())
-  }, [])
+  }, [mode])
 
   useEffect(() => {
     if (status === "playing") {

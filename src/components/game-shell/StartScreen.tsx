@@ -10,10 +10,11 @@ interface StartScreenProps {
   description: string
   icon: string
   instructions?: React.ReactNode
+  configSlot?: React.ReactNode
   onStart: () => void
 }
 
-export function StartScreen({ title, description, icon, instructions, onStart }: StartScreenProps) {
+export function StartScreen({ title, description, icon, instructions, configSlot, onStart }: StartScreenProps) {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-6">
       <motion.div
@@ -52,6 +53,13 @@ export function StartScreen({ title, description, icon, instructions, onStart }:
 
           {/* Custom instructions from the game */}
           {instructions && <div className="mb-6">{instructions}</div>}
+
+          {/* Per-game config (ops filter, mode selector, etc.) */}
+          {configSlot && (
+            <div className="mb-6 rounded-xl border border-border/60 bg-muted/20 p-4">
+              {configSlot}
+            </div>
+          )}
 
           <Button size="xl" className="w-full" onClick={onStart}>
             Start Game

@@ -11,6 +11,7 @@ export interface EquationProblem {
 }
 
 export type EquationLevel = 1 | 2 | 3 | 4 | 5
+export type EquationFocus = "mixed" | EquationLevel
 
 function randInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min

@@ -4,19 +4,23 @@
  */
 import {
   generateArithmeticProblem,
+  generateFilteredArithmeticProblem,
   getDifficultyLevel,
   getStreakMultiplier,
   calculateProblemScore,
   type MathProblem,
   type DifficultyLevel,
+  type ArithOp,
 } from "@/utils/mathUtils"
 
-export type { MathProblem, DifficultyLevel }
+export type { MathProblem, DifficultyLevel, ArithOp }
 export { generateArithmeticProblem, getDifficultyLevel, getStreakMultiplier, calculateProblemScore }
 
-export function nextProblem(correctCount: number): MathProblem {
+export function nextProblem(correctCount: number, ops?: ArithOp[]): MathProblem {
   const level = getDifficultyLevel(correctCount)
-  return generateArithmeticProblem(level)
+  return ops && ops.length > 0
+    ? generateFilteredArithmeticProblem(level, ops)
+    : generateArithmeticProblem(level)
 }
 
 export function checkAnswer(problem: MathProblem, raw: string): boolean {

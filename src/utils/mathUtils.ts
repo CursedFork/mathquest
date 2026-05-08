@@ -132,3 +132,50 @@ export function generateCoordinatePoint(max: number = 8): { x: number; y: number
   const y = randInt(-max, max)
   return { x, y }
 }
+
+export type ArithOp = "add" | "sub" | "mul" | "div"
+
+export function generateFilteredArithmeticProblem(
+  level: DifficultyLevel,
+  ops: ArithOp[]
+): MathProblem {
+  if (ops.length === 0) return generateArithmeticProblem(level)
+  const op = ops[Math.floor(Math.random() * ops.length)]
+  const l = Math.min(level, 4) as 1 | 2 | 3 | 4
+
+  switch (op) {
+    case "add": {
+      const [mn1, mx1, mn2, mx2] =
+        l === 1 ? [1, 9, 1, 9] :
+        l === 2 ? [10, 50, 1, 49] :
+        l === 3 ? [20, 99, 10, 79] :
+                  [100, 500, 50, 400]
+      const num1 = randInt(mn1, mx1), num2 = randInt(mn2, mx2)
+      return { num1, num2, operation: "+", answer: num1 + num2, displayText: `${num1} + ${num2}` }
+    }
+    case "sub": {
+      const [mn1, mx1, mn2, mx2] =
+        l === 1 ? [5, 15, 1, 10] :
+        l === 2 ? [20, 99, 1, 40] :
+        l === 3 ? [50, 150, 10, 80] :
+                  [100, 500, 50, 300]
+      let num1 = randInt(mn1, mx1), num2 = randInt(mn2, mx2)
+      if (num2 > num1) [num1, num2] = [num2, num1]
+      return { num1, num2, operation: "-", answer: num1 - num2, displayText: `${num1} − ${num2}` }
+    }
+    case "mul": {
+      const [mn, mx] = l === 1 ? [2, 5] : l === 2 ? [2, 9] : l === 3 ? [2, 12] : [3, 15]
+      const num1 = randInt(mn, mx), num2 = randInt(mn, mx)
+      return { num1, num2, operation: "*", answer: num1 * num2, displayText: `${num1} × ${num2}` }
+    }
+    case "div": {
+      const [ansMin, ansMax, divMin, divMax] =
+        l === 1 ? [2, 5, 2, 5] :
+        l === 2 ? [2, 10, 2, 10] :
+        l === 3 ? [2, 12, 2, 12] :
+                  [2, 15, 2, 15]
+      const answer = randInt(ansMin, ansMax), num2 = randInt(divMin, divMax)
+      return { num1: num2 * answer, num2, operation: "/", answer, displayText: `${num2 * answer} ÷ ${num2}` }
+    }
+  }
+}

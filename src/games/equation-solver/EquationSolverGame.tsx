@@ -11,10 +11,15 @@ import {
   getEquationLevel,
   type EquationProblem,
   type EquationLevel,
+  type EquationFocus,
 } from "./logic"
 import { calculateProblemScore } from "@/utils/mathUtils"
 
-export function EquationSolverGame() {
+interface EquationSolverGameProps {
+  focus?: EquationFocus
+}
+
+export function EquationSolverGame({ focus = "mixed" }: EquationSolverGameProps) {
   const status = useGameStore((s) => s.status)
   const streak = useGameStore((s) => s.streak)
   const correctAnswers = useGameStore((s) => s.correctAnswers)
@@ -38,14 +43,14 @@ export function EquationSolverGame() {
   const problemStart = useRef(Date.now())
 
   const spawnProblem = useCallback((count: number) => {
-    const level = getEquationLevel(count)
+    const level = focus !== "mixed" ? focus : getEquationLevel(count)
     setCurrentLevel(level)
     setProblem(generateEquationProblem(level))
     setInput("")
     setFeedback(null)
     problemStart.current = Date.now()
     requestAnimationFrame(() => inputRef.current?.focus())
-  }, [])
+  }, [focus])
 
   useEffect(() => {
     if (status === "playing") spawnProblem(0)

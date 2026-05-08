@@ -8,8 +8,24 @@ export interface CoordPoint {
   y: number
 }
 
-export function newTarget(max = 8): CoordPoint {
-  return generateCoordinatePoint(max)
+export type CoordMode = "all" | "q1" | "right" | "top"
+
+function randInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function newTarget(mode: CoordMode = "all"): CoordPoint {
+  switch (mode) {
+    case "q1":
+      return { x: randInt(1, 8), y: randInt(1, 8) }
+    case "right":
+      return { x: randInt(1, 8), y: randInt(-8, 8) }
+    case "top":
+      return { x: randInt(-8, 8), y: randInt(1, 8) }
+    case "all":
+    default:
+      return generateCoordinatePoint(8)
+  }
 }
 
 export function checkCoordAnswer(target: CoordPoint, xRaw: string, yRaw: string): boolean {

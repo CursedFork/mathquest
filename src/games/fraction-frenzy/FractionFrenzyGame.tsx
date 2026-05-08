@@ -7,16 +7,22 @@ import { useSoundToggle } from "@/hooks/useSoundToggle"
 import { FractionDisplay } from "./FractionDisplay"
 import {
   generateFractionProblem,
+  generateFractionArithProblem,
   checkFractionAnswer,
   getFractionLevel,
   getFractionLevelName,
   fractionProblemScore,
   type FractionProblem,
   type FractionLevel,
+  type FractionMode,
   type CheckResult,
 } from "./logic"
 
-export function FractionFrenzyGame() {
+interface FractionFrenzyGameProps {
+  mode?: FractionMode
+}
+
+export function FractionFrenzyGame({ mode = "simplify" }: FractionFrenzyGameProps) {
   const status = useGameStore((s) => s.status)
   const streak = useGameStore((s) => s.streak)
   const correctAnswers = useGameStore((s) => s.correctAnswers)
@@ -44,14 +50,18 @@ export function FractionFrenzyGame() {
   const spawnProblem = useCallback((count: number) => {
     const level = getFractionLevel(count)
     setCurrentLevel(level)
-    setProblem(generateFractionProblem(level))
+    setProblem(
+      mode === "add" ? generateFractionArithProblem(level, "add") :
+      mode === "subtract" ? generateFractionArithProblem(level, "subtract") :
+      generateFractionProblem(level)
+    )
     setNumInput("")
     setDenInput("")
     setFeedback(null)
     setFeedbackMsg(null)
     problemStart.current = Date.now()
     requestAnimationFrame(() => numRef.current?.focus())
-  }, [])
+  }, [mode])
 
   useEffect(() => {
     if (status === "playing") spawnProblem(0)
@@ -84,7 +94,7 @@ export function FractionFrenzyGame() {
       if (streak >= 4) playSound("streak")
       else playSound("correct")
       setFeedback("correct")
-      setFeedbackMsg(`✓ ${problem.answerNum}/${problem.answerDen} — correct!`)
+      setFeedbackMsg(`✓ ${problem.answerNum}/${problem.answerDen} — correct!${problem.operation ? " (simplified)" : ""}`)
       setScorePopup({ pts, id: ++popupCounter.current })
       timerRef.current = setTimeout(() => spawnProblem(correctAnswers + 1), 500)
     } else if (result === "partial") {
@@ -133,7 +143,7 @@ export function FractionFrenzyGame() {
           : "border-border"
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full max-w-lg">
+    <div className={`flex flex-col items-center gap-8 w-full ${mode === "simplify" ? "max-w-lg" : "max-w-2xl"}`}>
       {/* Level badge */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -174,9 +184,19 @@ export function FractionFrenzyGame() {
         animate={feedback === "wrong" ? { x: [0, -8, 8, -5, 5, 0] } : {}}
         transition={{ duration: 0.35 }}
       >
-        <div className="flex items-center justify-center gap-6 sm:gap-10">
-          {/* Problem fraction (read-only) */}
-          <FractionDisplay numerator={problem.numerator} denominator={problem.denominator} />
+        <div className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
+          {/* Problem display: single fraction (simplify) or two fractions + operator (add/sub) */}
+          {problem.operation ? (
+            <>
+              <FractionDisplay numerator={problem.numerator} denominator={problem.denominator} compact />
+              <span className="text-4xl font-black text-foreground select-none">
+                {problem.operation === "add" ? "+" : "−"}
+              </span>
+              <FractionDisplay numerator={problem.num2!} denominator={problem.den2!} compact />
+            </>
+          ) : (
+            <FractionDisplay numerator={problem.numerator} denominator={problem.denominator} />
+          )}
 
           {/* Equals */}
           <span className="text-4xl font-bold text-muted-foreground">=</span>
@@ -229,7 +249,10 @@ export function FractionFrenzyGame() {
 
       {/* Hint */}
       <p className="text-xs text-muted-foreground text-center">
-        Reduce the fraction to its simplest form · Tab between fields · Enter to submit
+        {mode === "simplify"
+          ? "Reduce the fraction to its simplest form"
+          : `Enter the simplified result of the ${mode === "add" ? "addition" : "subtraction"}`}
+        {" · Tab between fields · Enter to submit"}
       </p>
 
       {/* Submit */}

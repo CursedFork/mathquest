@@ -3,12 +3,18 @@
  * Core mechanic: reduce a fraction to its simplest form.
  */
 
+export type FractionMode = "simplify" | "add" | "subtract"
+
 export interface FractionProblem {
   numerator: number
   denominator: number
   answerNum: number // fully reduced
   answerDen: number
-  factor: number // what it was multiplied by (for debug / hint purposes)
+  factor: number
+  // Add / subtract problems only
+  num2?: number
+  den2?: number
+  operation?: "add" | "subtract"
 }
 
 export type FractionLevel = 1 | 2 | 3 | 4 | 5
@@ -110,6 +116,46 @@ export function getFractionLevelName(level: FractionLevel): string {
     5: "Expert Mode",
   }
   return names[level]
+}
+
+/**
+ * Add / subtract problems always use the same denominator (pedagogically clear).
+ * Level controls the denominator size and how much numerator headroom there is.
+ */
+export function generateFractionArithProblem(
+  level: FractionLevel,
+  operation: "add" | "subtract"
+): FractionProblem {
+  // Denominator range by level
+  const denMax = level === 1 ? 6 : level === 2 ? 8 : level === 3 ? 10 : level === 4 ? 12 : 15
+  const den = randInt(3, denMax)
+
+  let num1: number, num2: number
+
+  if (operation === "add") {
+    // Ensure sum is a proper fraction (< den) to avoid mixed numbers
+    num1 = randInt(1, Math.floor(den / 2))
+    num2 = randInt(1, den - num1 - 1)
+    if (num2 < 1) num2 = 1
+  } else {
+    // subtract: ensure num1 > num2 so result is positive
+    num1 = randInt(2, den - 1)
+    num2 = randInt(1, num1 - 1)
+  }
+
+  const rawNum = operation === "add" ? num1 + num2 : num1 - num2
+  const [ansNum, ansDen] = simplifyFraction(rawNum, den)
+
+  return {
+    numerator: num1,
+    denominator: den,
+    answerNum: ansNum,
+    answerDen: ansDen,
+    factor: 1,
+    num2,
+    den2: den,
+    operation,
+  }
 }
 
 export function fractionProblemScore(streak: number, answerTimeMs: number): number {

@@ -7,17 +7,21 @@ import { useScore } from "@/hooks/useScore"
 import { useSoundToggle } from "@/hooks/useSoundToggle"
 import { ProblemDisplay } from "./ProblemDisplay"
 import { AnswerInput } from "./AnswerInput"
-import { nextProblem, checkAnswer, getDifficultyName, type MathProblem } from "./logic"
+import { nextProblem, checkAnswer, getDifficultyName, type MathProblem, type ArithOp } from "./logic"
 import { getDifficultyLevel } from "@/utils/mathUtils"
 
 type Feedback = "correct" | "incorrect" | null
 
-export function ArithmeticRushGame() {
+interface ArithmeticRushGameProps {
+  ops?: ArithOp[]
+}
+
+export function ArithmeticRushGame({ ops }: ArithmeticRushGameProps) {
   const status = useGameStore((s) => s.status)
   const { recordCorrect, recordIncorrect, correctAnswers, streak } = useScore()
   const { playSound } = useSoundToggle()
 
-  const [problem, setProblem] = useState<MathProblem>(() => nextProblem(0))
+  const [problem, setProblem] = useState<MathProblem>(() => nextProblem(0, ops))
   const [input, setInput] = useState("")
   const [feedback, setFeedback] = useState<Feedback>(null)
   const [scorePopup, setScorePopup] = useState<{ pts: number; id: number } | null>(null)
@@ -48,14 +52,13 @@ export function ArithmeticRushGame() {
 
   const spawnProblem = useCallback(
     (count: number) => {
-      setProblem(nextProblem(count))
+      setProblem(nextProblem(count, ops))
       setInput("")
       setFeedback(null)
       problemStartRef.current = Date.now()
-      // Tiny delay so input clears before re-focus
       requestAnimationFrame(() => inputRef.current?.focus())
     },
-    []
+    [ops]
   )
 
   const handleSubmit = useCallback(() => {

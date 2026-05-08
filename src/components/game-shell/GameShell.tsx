@@ -17,6 +17,7 @@ interface GameShellProps {
   description: string
   icon: string
   instructions?: React.ReactNode
+  configSlot?: React.ReactNode
   children: React.ReactNode
 }
 
@@ -37,6 +38,7 @@ export function GameShell({
   description,
   icon,
   instructions,
+  configSlot,
   children,
 }: GameShellProps) {
   const status = useGameStore((s) => s.status)
@@ -64,6 +66,7 @@ export function GameShell({
         description={description}
         icon={icon}
         instructions={instructions}
+        configSlot={configSlot}
         onStart={() => startGame()}
       />
     )
