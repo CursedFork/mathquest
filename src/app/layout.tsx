@@ -9,8 +9,8 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: {
-    default: "MathQuest – Arcade Math Practice",
-    template: "%s | MathQuest",
+    default: "Math Forge – Arcade Math Practice",
+    template: "%s | Math Forge",
   },
   description:
     "Transform boring math drills into addictive arcade-style games. Practice arithmetic, coordinates, fractions, and more — for free.",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "math drill",
   ],
   openGraph: {
-    title: "MathQuest – Arcade Math Practice",
+    title: "Math Forge – Arcade Math Practice",
     description: "Boring math drills → addictive arcade games.",
     type: "website",
   },

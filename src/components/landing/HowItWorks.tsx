@@ -110,7 +110,7 @@ export function HowItWorks() {
                 <span className="text-gradient-accent">gamified</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                MathQuest is built on a simple philosophy: any drill worksheet can become a
+                Math Forge is built on a simple philosophy: any drill worksheet can become a
                 replayable game. Students practice the same skills — they just actually want to do
                 it. Perfect for sub plans, early finishers, or math centers.
               </p>
